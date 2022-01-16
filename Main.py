@@ -29,26 +29,38 @@ class Main:
         rect1 = pygame.Rect(abandonWidth, abandonHeight, widthSq, heightSq)
         rect2 = pygame.Rect(abandonWidth + widthSq, abandonHeight, widthSq, heightSq)
 
-        pygame.draw.rect(screen, (11, 140, 32), rect1)
-        pygame.draw.rect(screen, (0, 255, 0), rect2)
+        rect1_color = (11, 140, 32)
+        rect2_color = (0, 255, 0)
+
+        pygame.draw.rect(screen, rect1_color, rect1)
+        pygame.draw.rect(screen, rect2_color, rect2)
+
+        snake_squares = list()
+        snake_squares.append(rect1)
+        snake_squares.append(rect2)
 
         for i in range(n_sq):
             for j in range(3, n_sq, 2):
                 rect1 = pygame.Rect(rect2.right, rect2.top, widthSq, heightSq)
                 rect2 = pygame.Rect(rect1.right, rect1.top, widthSq, heightSq)
-                pygame.draw.rect(screen, (11, 140, 32), rect1)
-                pygame.draw.rect(screen, (0, 255, 0), rect2)
+                snake_squares.append(rect1)
+                snake_squares.append(rect2)
+                pygame.draw.rect(screen, rect1_color, rect1)
+                pygame.draw.rect(screen, rect2_color, rect2)
+            if i >= (n_sq - 1):
+                break
             rect1 = pygame.Rect(abandonWidth, rect2.bottom, widthSq, heightSq)
             rect2 = pygame.Rect(abandonWidth + widthSq, rect2.bottom, widthSq, heightSq)
-            pygame.draw.rect(screen, (11, 140, 32), rect1)
-            pygame.draw.rect(screen, (0, 255, 0), rect2)
+            snake_squares.append(rect1)
+            snake_squares.append(rect2)
+            rect1_color, rect2_color = rect2_color, rect1_color
+            pygame.draw.rect(screen, rect1_color, rect1)
+            pygame.draw.rect(screen, rect2_color, rect2)
 
-        # gameRect = pygame.Rect(width * 0.07, height * 0.07, width * 0.87, height * 0.87)
-
-        # pygame.draw.rect(screen, (11, 140, 32), gameRect)
+        print(snake_squares)
 
         while True:
-
+            time.sleep(0.007)
             screen.blit(text, textRect)
 
             for event in pygame.event.get():
