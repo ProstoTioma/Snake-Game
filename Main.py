@@ -1,11 +1,12 @@
 import pygame
 import time
+import random
 
 
 class Main:
     def __init__(self, width, height):
         pygame.init()
-        bg = (124, 193, 121)
+        bg = (87, 138, 52)
 
         screen = pygame.display.set_mode((width, height))
 
@@ -29,8 +30,8 @@ class Main:
         rect1 = pygame.Rect(abandonWidth, abandonHeight, widthSq, heightSq)
         rect2 = pygame.Rect(abandonWidth + widthSq, abandonHeight, widthSq, heightSq)
 
-        rect1_color = (11, 140, 32)
-        rect2_color = (0, 255, 0)
+        rect1_color = (142, 204, 57)
+        rect2_color = (167, 217, 72)
 
         pygame.draw.rect(screen, rect1_color, rect1)
         pygame.draw.rect(screen, rect2_color, rect2)
@@ -59,13 +60,21 @@ class Main:
 
         print(snake_squares)
 
+        apple = pygame.image.load('./objects/apple.png')
+        apple_rect = apple.get_rect()
+        apple_rect.left = random.choice(snake_squares).left
+        apple_rect.bottom = random.choice(snake_squares).bottom + abandonHeight + heightSq
+        apple = pygame.transform.scale(apple, (widthSq, heightSq))
+
         while True:
-            time.sleep(0.007)
+            time.sleep(0.07)
+            screen.blit(apple, apple_rect)
             screen.blit(text, textRect)
 
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
                     pygame.quit()
+                    break
             pygame.display.update()
 
 
