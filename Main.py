@@ -60,7 +60,7 @@ class Main:
 
         print(snake_squares)
 
-        apple = pygame.image.load('./objects/apple.png')
+        apple = pygame.image.load('resources/apple.png')
         apple_rect = apple.get_rect()
         apple_rect.left = random.choice(snake_squares).left
         apple_rect.bottom = random.choice(snake_squares).bottom + abandonHeight + heightSq
