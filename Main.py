@@ -4,11 +4,13 @@ import random
 
 
 class Main:
+    snake_squares = list()
+
     def __init__(self, width, height):
         pygame.init()
         bg = (87, 138, 52)
 
-        screen = pygame.display.set_mode((width, height))
+        self.screen = pygame.display.set_mode((width, height))
 
         pygame.display.set_caption('Snake Game')
 
@@ -19,63 +21,67 @@ class Main:
 
         pygame.display.flip()
 
-        screen.fill(bg)
+        self.screen.fill(bg)
 
-        abandonWidth = width * 0.1
-        abandonHeight = height * 0.1
+        self.abandonWidth = width * 0.1
+        self.abandonHeight = height * 0.1
 
         n_sq = 14
-        widthSq, heightSq = (width - (abandonWidth * 2)) / n_sq, (height - (abandonHeight * 2)) / n_sq
+        self.widthSq, self.heightSq = (width - (self.abandonWidth * 2)) / n_sq, (
+                height - (self.abandonHeight * 2)) / n_sq
 
-        rect1 = pygame.Rect(abandonWidth, abandonHeight, widthSq, heightSq)
-        rect2 = pygame.Rect(abandonWidth + widthSq, abandonHeight, widthSq, heightSq)
+        rect1 = pygame.Rect(self.abandonWidth, self.abandonHeight, self.widthSq, self.heightSq)
+        rect2 = pygame.Rect(self.abandonWidth + self.widthSq, self.abandonHeight, self.widthSq, self.heightSq)
 
         rect1_color = (142, 204, 57)
         rect2_color = (167, 217, 72)
 
-        pygame.draw.rect(screen, rect1_color, rect1)
-        pygame.draw.rect(screen, rect2_color, rect2)
+        pygame.draw.rect(self.screen, rect1_color, rect1)
+        pygame.draw.rect(self.screen, rect2_color, rect2)
 
-        snake_squares = list()
-        snake_squares.append(rect1)
-        snake_squares.append(rect2)
+        self.snake_squares.append(rect1)
+        self.snake_squares.append(rect2)
 
         for i in range(n_sq):
             for j in range(3, n_sq, 2):
-                rect1 = pygame.Rect(rect2.right, rect2.top, widthSq, heightSq)
-                rect2 = pygame.Rect(rect1.right, rect1.top, widthSq, heightSq)
-                snake_squares.append(rect1)
-                snake_squares.append(rect2)
-                pygame.draw.rect(screen, rect1_color, rect1)
-                pygame.draw.rect(screen, rect2_color, rect2)
+                rect1 = pygame.Rect(rect2.right, rect2.top, self.widthSq, self.heightSq)
+                rect2 = pygame.Rect(rect1.right, rect1.top, self.widthSq, self.heightSq)
+                self.snake_squares.append(rect1)
+                self.snake_squares.append(rect2)
+                pygame.draw.rect(self.screen, rect1_color, rect1)
+                pygame.draw.rect(self.screen, rect2_color, rect2)
             if i >= (n_sq - 1):
                 break
-            rect1 = pygame.Rect(abandonWidth, rect2.bottom, widthSq, heightSq)
-            rect2 = pygame.Rect(abandonWidth + widthSq, rect2.bottom, widthSq, heightSq)
-            snake_squares.append(rect1)
-            snake_squares.append(rect2)
+            rect1 = pygame.Rect(self.abandonWidth, rect2.bottom, self.widthSq, self.heightSq)
+            rect2 = pygame.Rect(self.abandonWidth + self.widthSq, rect2.bottom, self.widthSq, self.heightSq)
+            self.snake_squares.append(rect1)
+            self.snake_squares.append(rect2)
             rect1_color, rect2_color = rect2_color, rect1_color
-            pygame.draw.rect(screen, rect1_color, rect1)
-            pygame.draw.rect(screen, rect2_color, rect2)
+            pygame.draw.rect(self.screen, rect1_color, rect1)
+            pygame.draw.rect(self.screen, rect2_color, rect2)
 
-        print(snake_squares)
-
-        apple = pygame.image.load('./objects/apple.png')
-        apple_rect = apple.get_rect()
-        apple_rect.left = random.choice(snake_squares).left
-        apple_rect.bottom = random.choice(snake_squares).bottom + abandonHeight + heightSq
-        apple = pygame.transform.scale(apple, (widthSq, heightSq))
+        print(self.snake_squares)
 
         while True:
             time.sleep(0.07)
-            screen.blit(apple, apple_rect)
-            screen.blit(text, textRect)
+            self.screen.blit(text, textRect)
+            self.generate_fruit('resources/apple.png')
 
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
                     pygame.quit()
                     break
             pygame.display.update()
+
+    def generate_fruit(self, fruit):
+        fruit = pygame.image.load(fruit.path)
+        fruit_rect = fruit.get_rect()
+        square = random.choice(self.snake_squares)
+        fruit_rect.left = square.left
+        fruit_rect.bottom = square.bottom + self.abandonHeight + self.heightSq
+        fruit = pygame.transform.scale(fruit, (self.widthSq, self.heightSq))
+        self.screen.blit(fruit, fruit_rect)
+        return square
 
 
 if __name__ == '__main__':
