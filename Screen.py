@@ -34,10 +34,10 @@ class Screen:
         self.draw_field()
 
         self.sn.segments.append(snake.Segment(self.width / 2, self.height / 2))
-        self.sn.segments.append(snake.Segment(self.sn.segments[0].x + self.widthSq, self.sn.segments[0].y))
-        self.sn.segments.append(snake.Segment(self.sn.segments[0].x + self.widthSq * 2, self.sn.segments[0].y))
+        self.sn.segments.append(snake.Segment(self.sn.segments[0].x - self.widthSq, self.sn.segments[0].y))
+        self.sn.segments.append(snake.Segment(self.sn.segments[0].x - self.widthSq * 2, self.sn.segments[0].y))
 
-        direction = 'DOWN'
+        direction = 'RIGHT'
         while True:
             time.sleep(0.1)
             self.draw_field()
@@ -49,13 +49,13 @@ class Screen:
                     pygame.quit()
                     break
                 if event.type == pygame.KEYDOWN:
-                    if event.key == pygame.K_UP:
+                    if event.key == pygame.K_UP and direction != 'DOWN':
                         direction = 'UP'
-                    elif event.key == pygame.K_DOWN:
+                    elif event.key == pygame.K_DOWN and direction != 'UP':
                         direction = 'DOWN'
-                    elif event.key == pygame.K_LEFT:
+                    elif event.key == pygame.K_LEFT and direction != 'RIGHT':
                         direction = 'LEFT'
-                    elif event.key == pygame.K_RIGHT:
+                    elif event.key == pygame.K_RIGHT and direction != 'LEFT':
                         direction = 'RIGHT'
 
             pygame.display.update()
