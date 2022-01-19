@@ -9,9 +9,8 @@ import fruits
 class Screen:
     field_squares = list()
     n_sq = 14
-    sn = snake.Snake(20)
 
-    def __init__(self, width=800, height=600):
+    def __init__(self, width=800, height=800):
         self.bg = (87, 138, 52)
         self.width = width
         self.height = height
@@ -27,6 +26,8 @@ class Screen:
         self.widthSq, self.heightSq = (self.width - (self.abandonWidth * 2)) / self.n_sq, (
                 self.height - (self.abandonHeight * 2)) / self.n_sq
 
+        self.sn = snake.Snake(1, self.widthSq, self.heightSq)
+
     def start(self):
         pygame.init()
         pygame.display.set_caption('Snake Game')
@@ -36,13 +37,16 @@ class Screen:
         self.sn.segments.append(snake.Segment(self.width / 2, self.height / 2))
         self.sn.segments.append(snake.Segment(self.sn.segments[0].x - self.widthSq, self.sn.segments[0].y))
         self.sn.segments.append(snake.Segment(self.sn.segments[0].x - self.widthSq * 2, self.sn.segments[0].y))
+        self.sn.segments.append(snake.Segment(self.sn.segments[0].x - self.widthSq * 3, self.sn.segments[0].y))
+        self.sn.segments.append(snake.Segment(self.sn.segments[0].x - self.widthSq * 4, self.sn.segments[0].y))
+        self.sn.segments.append(snake.Segment(self.sn.segments[0].x - self.widthSq * 5, self.sn.segments[0].y))
 
-        direction = 'RIGHT'
+        direction = 'UP'
         while True:
-            time.sleep(0.1)
+            time.sleep(0.5)
             self.draw_field()
-            self.draw_objects()
             self.sn.move(direction)
+            self.draw_objects()
 
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
