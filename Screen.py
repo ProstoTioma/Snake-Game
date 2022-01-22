@@ -8,7 +8,7 @@ import fruits
 
 class Screen:
     field_squares = list()
-    n_sq = 14
+    n_sq = 18
 
     def __init__(self, width=800, height=800):
         self.bg = (87, 138, 52)
@@ -17,59 +17,80 @@ class Screen:
         self.apple = fruits.Fruit('resources/apple.png', 1)
         self.loaded_fruit = None
         self.apple_rect = None
+        self.gameOver = False
+        self.time_out = 0.5
+        self.score = 0
 
         self.screen = pygame.display.set_mode((self.width, self.height))
 
         self.abandonWidth = self.width * 0.1
         self.abandonHeight = self.height * 0.1
 
-        self.widthSq, self.heightSq = (self.width - (self.abandonWidth * 2)) / self.n_sq, (
-                self.height - (self.abandonHeight * 2)) / self.n_sq
+        self.widthSq, self.heightSq = (self.width - (self.abandonWidth * 2)) // self.n_sq, (
+                self.height - (self.abandonHeight * 2)) // self.n_sq
 
-        self.sn = snake.Snake(1, self.widthSq, self.heightSq)
+        self.sn = snake.Snake(self.widthSq, self.heightSq)
 
     def start(self):
         pygame.init()
         pygame.display.set_caption('Snake Game')
         self.screen.fill(self.bg)
         self.draw_field()
+        decorate_fruit = pygame.image.load(self.apple.path)
+        apple_rect = decorate_fruit.get_rect()
+        decorate_fruit = pygame.transform.scale(decorate_fruit, (32, 32))
+        apple_rect.center = (self.width // 10, self.abandonHeight)
+        self.screen.blit(decorate_fruit, apple_rect)
 
-        self.sn.segments.append(snake.Segment(self.width / 2, self.height / 2))
-        self.sn.segments.append(snake.Segment(self.sn.segments[0].x - self.widthSq, self.sn.segments[0].y))
-        self.sn.segments.append(snake.Segment(self.sn.segments[0].x - self.widthSq * 2, self.sn.segments[0].y))
-        self.sn.segments.append(snake.Segment(self.sn.segments[0].x - self.widthSq * 3, self.sn.segments[0].y))
-        self.sn.segments.append(snake.Segment(self.sn.segments[0].x - self.widthSq * 4, self.sn.segments[0].y))
-        self.sn.segments.append(snake.Segment(self.sn.segments[0].x - self.widthSq * 5, self.sn.segments[0].y))
+        self.sn.segments.append(snake.Segment(self.field_squares[len(self.field_squares) // 2 + self.n_sq // 2].x, self.field_squares[len(self.field_squares) // 2 + self.n_sq // 2].y, 'head'))
+        self.sn.segments.append(snake.Segment(self.sn.segments[0].x - self.widthSq, self.sn.segments[0].y, 'body'))
+        self.sn.segments.append(snake.Segment(self.sn.segments[0].x - self.widthSq * 2, self.sn.segments[0].y, 'body'))
+        self.sn.segments.append(snake.Segment(self.sn.segments[0].x - self.widthSq * 3, self.sn.segments[0].y, 'body'))
 
-        direction = 'UP'
+        direction = 'RIGHT'
         while True:
-            time.sleep(0.5)
-            self.draw_field()
-            self.sn.move(direction)
-            self.draw_objects()
+            if not self.gameOver:
+                self.draw_field()
+                self.draw_objects()
+                self.sn.move(direction, self.field_squares, self.apple_rect, self.apple)
+                if not self.sn.is_alive:
+                    self.game_over()
 
-            for event in pygame.event.get():
-                if event.type == pygame.QUIT:
-                    pygame.quit()
-                    break
-                if event.type == pygame.KEYDOWN:
-                    if event.key == pygame.K_UP and direction != 'DOWN':
-                        direction = 'UP'
-                    elif event.key == pygame.K_DOWN and direction != 'UP':
-                        direction = 'DOWN'
-                    elif event.key == pygame.K_LEFT and direction != 'RIGHT':
-                        direction = 'LEFT'
-                    elif event.key == pygame.K_RIGHT and direction != 'LEFT':
-                        direction = 'RIGHT'
+                for event in pygame.event.get():
+                    if event.type == pygame.QUIT:
+                        pygame.quit()
+                        break
+                    if event.type == pygame.KEYDOWN:
+                        if (event.key == pygame.K_UP or event.key == pygame.K_w) and direction != 'DOWN':
+                            direction = 'UP'
+                        elif (event.key == pygame.K_DOWN or event.key == pygame.K_s) and direction != 'UP':
+                            direction = 'DOWN'
+                        elif (event.key == pygame.K_LEFT or event.key == pygame.K_a) and direction != 'RIGHT':
+                            direction = 'LEFT'
+                        elif (event.key == pygame.K_RIGHT or event.key == pygame.K_d) and direction != 'LEFT':
+                            direction = 'RIGHT'
+            else:
+                self.game_over()
 
             pygame.display.update()
+
+    def game_over(self):
+        self.sn.is_alive = False
+        self.gameOver = True
+        font = pygame.font.Font('freesansbold.ttf', 64)
+        text = font.render('GAME OVER!', True, (0, 0, 0), (255, 255, 255))
+        textRect = text.get_rect()
+        textRect.center = (self.width // 2, self.height // 2)
+
+        self.screen.blit(text, textRect)
 
     def draw_field(self):
 
         font = pygame.font.Font('freesansbold.ttf', 32)
-        text = font.render('Score:', True, (255, 255, 255), self.bg)
+        text = font.render(f'{self.score}', True, (255, 255, 255), self.bg)
 
         textRect = text.get_rect()
+        textRect.center = (self.width // 10, self.widthSq)
 
         pygame.display.flip()
 
@@ -107,7 +128,10 @@ class Screen:
         fruit = pygame.image.load(fruit.path)
         fruit_rect = fruit.get_rect()
         square = random.choice(self.field_squares)
-        fruit_rect.left = square.left
+        for segment in self.sn.segments:
+            if segment.x == square.x and segment.y == square.y:
+                square = random.choice(self.field_squares)
+        fruit_rect.left = square.left - self.widthSq
         fruit_rect.bottom = square.bottom + self.abandonHeight + self.heightSq
         fruit = pygame.transform.scale(fruit, (self.widthSq, self.heightSq))
         self.loaded_fruit = fruit
@@ -119,8 +143,9 @@ class Screen:
             segment_rect = pygame.Rect(segment.x, segment.y, self.widthSq, self.heightSq)
             pygame.draw.rect(self.screen, (240, 120, 0), segment_rect)
         if not self.apple.is_alive:
-            apple_sq = self.generate_fruit(self.apple)
+            self.apple_rect = self.generate_fruit(self.apple)
             self.apple.is_alive = True
+            self.score += self.apple.score
         self.screen.blit(self.loaded_fruit, self.apple_rect)
 
 
