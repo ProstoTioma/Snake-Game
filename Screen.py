@@ -8,7 +8,7 @@ import fruits
 
 class Screen:
     field_squares = list()
-    n_sq = 18
+    n_sq = 20
 
     def __init__(self, width=800, height=800):
         self.bg = (87, 138, 52)
@@ -34,6 +34,7 @@ class Screen:
     def start(self):
         pygame.init()
         pygame.display.set_caption('Snake Game')
+        self.score = 'f'
         self.screen.fill(self.bg)
         self.draw_field()
         decorate_fruit = pygame.image.load(self.apple.path)
@@ -145,7 +146,10 @@ class Screen:
         if not self.apple.is_alive:
             self.apple_rect = self.generate_fruit(self.apple)
             self.apple.is_alive = True
-            self.score += self.apple.score
+            if self.score == 'f':
+                self.score = 0
+            else:
+                self.score += self.apple.score
         self.screen.blit(self.loaded_fruit, self.apple_rect)
 
 
