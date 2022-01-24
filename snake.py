@@ -41,7 +41,7 @@ class Snake:
             self.segments.insert(0, Segment(head.x + change_x, head.y - change_y, 'head'))
             self.segments[1].name = 'body'
             del self.segments[-1]
-        time.sleep(0.1)
+        time.sleep(0.15)
 
 
 class Segment:

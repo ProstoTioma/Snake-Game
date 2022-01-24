@@ -1,24 +1,30 @@
 import random
-import time
-import snake
+
 import pygame
 
 import fruits
+import snake
 
 
 class Screen:
     field_squares = list()
     n_sq = 16
 
-    def __init__(self, width=1000, height=1000):
+    def __init__(self, width=600, height=600):
         self.bg = (87, 138, 52)
         self.width = width
         self.height = height
         self.apple = fruits.Fruit('resources/apple.png', 1)
+        self.banana = fruits.Fruit('resources/banane.png', 2)
+        self.cherry = fruits.Fruit('resources/cherry.png', 3)
+        self.grape = fruits.Fruit('resources/grape.png', 4)
+        self.pineapple = fruits.Fruit('resources/pineapple.png', 5)
+        self.strawberry = fruits.Fruit('resources/strawberry.png', 5)
+        self.mushroom = fruits.Fruit('resources/mushroom.png', 0)
+        self.fruits = [self.apple, self.banana, self.cherry, self.grape, self.pineapple, self.strawberry, self.mushroom]
         self.loaded_fruit = None
-        self.apple_rect = None
+        self.fruit_rect = None
         self.gameOver = False
-        self.time_out = 0.5
         self.score = 'f'
         self.trophy_score = 0
         self.direction = 'RIGHT'
@@ -41,7 +47,7 @@ class Screen:
             if not self.gameOver:
                 self.draw_field()
                 self.draw_objects()
-                self.sn.move(self.direction, self.field_squares, self.apple_rect, self.apple)
+                self.sn.move(self.direction, self.field_squares, self.fruit_rect, self.apple)
                 if not self.sn.is_alive:
                     self.game_over()
             else:
@@ -77,7 +83,7 @@ class Screen:
     def game_over(self):
         self.sn.is_alive = False
         self.gameOver = True
-        font = pygame.font.Font('freesansbold.ttf', 64)
+        font = pygame.font.Font('freesansbold.ttf', round(self.heightSq) * 2)
         text = font.render('GAME OVER!', True, (0, 0, 0), (255, 255, 255))
         textRect = text.get_rect()
         textRect.center = (self.width // 2, self.height // 2)
@@ -142,7 +148,7 @@ class Screen:
         fruit_rect.bottom = square.bottom + self.abandonHeight + self.heightSq
         fruit = pygame.transform.scale(fruit, (self.widthSq, self.heightSq))
         self.loaded_fruit = fruit
-        self.apple_rect = fruit_rect
+        self.fruit_rect = fruit_rect
         return square
 
     def draw_objects(self):
@@ -153,14 +159,15 @@ class Screen:
                             self.widthSq * 0.9) or segment.y <= self.field_squares[0].top - self.widthSq or segment.y >=
                     self.field_squares[-1].bottom):
                 pygame.draw.rect(self.screen, (240, 120, 0), segment_rect)
-        if not self.apple.is_alive:
-            self.apple_rect = self.generate_fruit(self.apple)
-            self.apple.is_alive = True
+        fruit = random.choice(self.fruits)
+        if not fruit.is_alive:
+            self.fruit_rect = self.generate_fruit(fruit)
+            fruit.is_alive = True
             if self.score == 'f':
                 self.score = 0
             else:
-                self.score += self.apple.score
-        self.screen.blit(self.loaded_fruit, self.apple_rect)
+                self.score += fruit.score
+        self.screen.blit(self.loaded_fruit, self.fruit_rect)
 
     def draw_background(self):
         pygame.init()
