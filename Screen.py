@@ -8,9 +8,9 @@ import fruits
 
 class Screen:
     field_squares = list()
-    n_sq = 20
+    n_sq = 16
 
-    def __init__(self, width=800, height=800):
+    def __init__(self, width=1000, height=1000):
         self.bg = (87, 138, 52)
         self.width = width
         self.height = height
@@ -19,7 +19,7 @@ class Screen:
         self.apple_rect = None
         self.gameOver = False
         self.time_out = 0.5
-        self.score = 0
+        self.score = 'f'
 
         self.screen = pygame.display.set_mode((self.width, self.height))
 
@@ -32,18 +32,11 @@ class Screen:
         self.sn = snake.Snake(self.widthSq, self.heightSq)
 
     def start(self):
-        pygame.init()
-        pygame.display.set_caption('Snake Game')
-        self.score = 'f'
-        self.screen.fill(self.bg)
-        self.draw_field()
-        decorate_fruit = pygame.image.load(self.apple.path)
-        apple_rect = decorate_fruit.get_rect()
-        decorate_fruit = pygame.transform.scale(decorate_fruit, (32, 32))
-        apple_rect.center = (self.width // 10, self.abandonHeight)
-        self.screen.blit(decorate_fruit, apple_rect)
+        self.draw_background()
 
-        self.sn.segments.append(snake.Segment(self.field_squares[len(self.field_squares) // 2 + self.n_sq // 2].x, self.field_squares[len(self.field_squares) // 2 + self.n_sq // 2].y, 'head'))
+        self.sn.segments.append(snake.Segment(self.field_squares[len(self.field_squares) // 2 + self.n_sq // 2].x,
+                                              self.field_squares[len(self.field_squares) // 2 + self.n_sq // 2].y,
+                                              'head'))
         self.sn.segments.append(snake.Segment(self.sn.segments[0].x - self.widthSq, self.sn.segments[0].y, 'body'))
         self.sn.segments.append(snake.Segment(self.sn.segments[0].x - self.widthSq * 2, self.sn.segments[0].y, 'body'))
         self.sn.segments.append(snake.Segment(self.sn.segments[0].x - self.widthSq * 3, self.sn.segments[0].y, 'body'))
@@ -91,7 +84,7 @@ class Screen:
         text = font.render(f'{self.score}', True, (255, 255, 255), self.bg)
 
         textRect = text.get_rect()
-        textRect.center = (self.width // 10, self.widthSq)
+        textRect.center = (self.width // 10, self.abandonHeight // 2)
 
         pygame.display.flip()
 
@@ -128,10 +121,12 @@ class Screen:
     def generate_fruit(self, fruit):
         fruit = pygame.image.load(fruit.path)
         fruit_rect = fruit.get_rect()
-        square = random.choice(self.field_squares)
-        for segment in self.sn.segments:
-            if segment.x == square.x and segment.y == square.y:
-                square = random.choice(self.field_squares)
+        while True:
+            square = random.choice(self.field_squares)
+            for segment in self.sn.segments:
+                if segment.x == square.x and segment.y == square.y:
+                    continue
+            break
         fruit_rect.left = square.left - self.widthSq
         fruit_rect.bottom = square.bottom + self.abandonHeight + self.heightSq
         fruit = pygame.transform.scale(fruit, (self.widthSq, self.heightSq))
@@ -142,7 +137,9 @@ class Screen:
     def draw_objects(self):
         for segment in self.sn.segments:
             segment_rect = pygame.Rect(segment.x, segment.y, self.widthSq, self.heightSq)
-            pygame.draw.rect(self.screen, (240, 120, 0), segment_rect)
+            if not (segment.x <= self.field_squares[0].left - (self.widthSq * 3) or segment.x >= self.field_squares[-1].left + (
+                    self.widthSq * 0.9) or segment.y <= self.field_squares[0].top - self.widthSq or segment.y >= self.field_squares[-1].bottom):
+                pygame.draw.rect(self.screen, (240, 120, 0), segment_rect)
         if not self.apple.is_alive:
             self.apple_rect = self.generate_fruit(self.apple)
             self.apple.is_alive = True
@@ -151,6 +148,18 @@ class Screen:
             else:
                 self.score += self.apple.score
         self.screen.blit(self.loaded_fruit, self.apple_rect)
+
+    def draw_background(self):
+        pygame.init()
+        pygame.display.set_caption('Snake Game')
+
+        self.screen.fill(self.bg)
+        self.draw_field()
+        decorate_fruit = pygame.image.load(self.apple.path)
+        apple_rect = decorate_fruit.get_rect()
+        decorate_fruit = pygame.transform.scale(decorate_fruit, (32, 32))
+        apple_rect.center = (self.width // 10, self.abandonHeight)
+        self.screen.blit(decorate_fruit, apple_rect)
 
 
 if __name__ == '__main__':

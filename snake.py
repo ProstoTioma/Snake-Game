@@ -19,28 +19,29 @@ class Snake:
                 self.is_alive = False
 
         if self.is_alive:
+            change_x = 0
+            change_y = 0
             head = self.segments[0]
             if round(head.x / 10) * 10 == round(apple_rect.x / 10) * 10 and round(head.y / 10) * 10 == round(
                     apple_rect.y / 10) * 10:
                 apple.is_alive = False
                 self.segments.append(Segment(self.segments[-1].x, self.segments[-1].y, 'body'))
             if direction == 'RIGHT':
-                self.segments.insert(0, Segment(head.x + speed, head.y, 'head'))
-                self.segments[1].name = 'body'
-                del self.segments[-1]
+                change_x = speed
+                change_y = 0
             elif direction == 'UP':
-                self.segments.insert(0, Segment(head.x, head.y - speed, 'head'))
-                self.segments[1].name = 'body'
-                del self.segments[-1]
+                change_y = speed
+                change_x = 0
             elif direction == 'LEFT':
-                self.segments.insert(0, Segment(head.x - speed, head.y, 'head'))
-                self.segments[1].name = 'body'
-                del self.segments[-1]
+                change_x = -speed
+                change_y = 0
             elif direction == 'DOWN':
-                self.segments.insert(0, Segment(head.x, head.y + speed, 'head'))
-                self.segments[1].name = 'body'
-                del self.segments[-1]
-        time.sleep(0.1)
+                change_y = -speed
+                change_x = 0
+            self.segments.insert(0, Segment(head.x + change_x, head.y - change_y, 'head'))
+            self.segments[1].name = 'body'
+            del self.segments[-1]
+        time.sleep(0.05)
 
 
 class Segment:
