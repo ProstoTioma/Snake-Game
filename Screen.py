@@ -10,7 +10,7 @@ class Screen:
     field_squares = list()
     n_sq = 16
 
-    def __init__(self, width=600, height=600):
+    def __init__(self, width=1000, height=1000):
         self.bg = (87, 138, 52)
         self.width = width
         self.height = height
@@ -193,8 +193,3 @@ class Screen:
         for i in range(1, n):
             self.sn.segments.append(
                 snake.Segment(self.sn.segments[0].x - self.widthSq * i, self.sn.segments[0].y, 'body'))
-
-
-if __name__ == '__main__':
-    main = Screen()
-    main.start()

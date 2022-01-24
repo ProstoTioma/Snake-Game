@@ -15,7 +15,8 @@ class Snake:
                     self.sq_width * 0.9) or \
                     segment.y <= field_sq[0].top - self.sq_width or segment.y >= field_sq[-1].bottom:
                 self.is_alive = False
-            elif segment.x == self.segments[0].x and segment.y == self.segments[0].y and segment.name != 'head':
+            elif segment.x == self.segments[0].x and segment.y == self.segments[0].y and segment.name != 'head'\
+                    and segment.x != self.segments[1].x and segment.y != self.segments[1].y:
                 self.is_alive = False
 
         if self.is_alive:
