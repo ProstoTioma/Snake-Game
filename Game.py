@@ -40,7 +40,7 @@ class Game:
     def restart(self):
         if int(self.score) > int(self.trophy_score):
             self.trophy_score = self.score
-        self.score = '     '
+        self.score = '       '
         self.sn.is_alive = True
         self.apple.is_alive = False
         self.gameOver = False
@@ -65,12 +65,17 @@ class Game:
         fruit = pygame.image.load(fruit.path)
         fruit = pygame.transform.scale(fruit, (self.widthSq, self.heightSq))
         fruit_rect = fruit.get_rect()
+        generated_in_snake = False
+        square = random.choice(self.field_squares)
         while True:
-            square = random.choice(self.field_squares)
+            if generated_in_snake:
+                square = random.choice(self.field_squares)
+                generated_in_snake = False
             for segment in self.sn.segments:
                 if segment.x == square.x and segment.y == square.y:
-                    continue
-            break
+                    generated_in_snake = True
+            if not generated_in_snake:
+                break
         self.loaded_fruit = fruit
         self.fruit_rect = fruit_rect
         return square

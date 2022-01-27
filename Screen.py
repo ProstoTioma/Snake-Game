@@ -116,7 +116,7 @@ class Screen:
 
         if not self.game.fruit.is_alive:
             self.game.fruit.is_alive = True
-            if self.game.score == '     ':
+            if self.game.score == '       ':
                 self.game.score = 0
             else:
                 self.game.score = str(int(self.game.score) + self.game.fruit.score)
