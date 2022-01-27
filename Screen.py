@@ -76,7 +76,7 @@ class Screen:
     def restart(self):
         if int(self.score) > int(self.trophy_score):
             self.trophy_score = self.score
-        self.score = 'r'
+        self.score = '     '
         self.sn.is_alive = True
         self.apple.is_alive = False
         self.gameOver = False
@@ -165,7 +165,7 @@ class Screen:
 
         if not self.fruit.is_alive:
             self.fruit.is_alive = True
-            if self.score == 'r':
+            if self.score == '     ':
                 self.score = 0
             else:
                 self.score = str(int(self.score) + self.fruit.score)
