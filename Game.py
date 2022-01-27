@@ -38,6 +38,7 @@ class Game:
         self.field_squares = field_squares
 
     def restart(self):
+        print(self.sn.segments[0].x, self.sn.segments[0].y)
         if int(self.score) > int(self.trophy_score):
             self.trophy_score = self.score
         self.score = '       '
@@ -48,6 +49,7 @@ class Game:
         self.generate_fruit(self.fruit)
         del self.sn.segments[:]
         self.create_snake_segments(3)
+        print(self.sn.segments[0].x, self.sn.segments[0].y)
         self.direction = 'RIGHT'
 
     def game_over(self):

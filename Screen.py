@@ -61,6 +61,7 @@ class Screen:
 
     # Draw squares and score
     def draw_field(self):
+        del self.field_squares[:]
         font = pygame.font.Font('freesansbold.ttf', 32)
         score = font.render(f'{self.game.score}', True, (255, 255, 255), self.bg)
         trophy = font.render(f'{self.game.trophy_score}', True, (255, 255, 255), self.bg)
