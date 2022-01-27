@@ -1,5 +1,6 @@
 import Screen
 
+# Run the game
 main = Screen.Screen()
 main.start()
-# TODO class Game, fruit spawn in snake fix, 3 keys die fix, write comments :)
+# TODO fruit spawn in snake fix, 3 keys die fix (right and sa pressed), spawn snake in different places :)
