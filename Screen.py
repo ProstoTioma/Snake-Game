@@ -110,8 +110,35 @@ class Screen:
 
     # Draw snake and fruit
     def draw_objects(self):
-        for segment in self.game.sn.segments:
-            direction = self.game.direction.lower()
+        direction = self.game.direction
+        for i in range(len(self.game.sn.segments)):
+            segment = self.game.sn.segments[i]
+            if i != 0:
+                previous_segment = self.game.sn.segments[i - 1]
+            else:
+                previous_segment = segment
+            if segment.x < previous_segment.x:
+                if segment.y == previous_segment.y:
+                    direction = 'right'
+                elif segment.y < previous_segment.y:
+                    direction = 'down'
+                else:
+                    direction = 'up'
+            elif segment.x > previous_segment.x:
+                if segment.y == previous_segment.y:
+                    direction = 'left'
+                elif segment.y < previous_segment.y:
+                    direction = 'down'
+                else:
+                    direction = 'up'
+            else:
+                if segment.name != 'head':
+                    if segment.y < previous_segment.y:
+                        direction = 'down'
+                    else:
+                        direction = 'up'
+
+            # for segment in self.game.sn.segments:
             body = pygame.image.load(f'resources/rotated_{direction}_{segment.name}.png')
             segment_rect = body.get_rect()
             body = pygame.transform.scale(body, (self.widthSq, self.widthSq))
