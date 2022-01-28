@@ -15,7 +15,7 @@ class Game:
         self.sn = snake.Snake(widthSq, heightSq)
 
         self.apple = fruits.Fruit('resources/apple.png', 1)
-        self.banana = fruits.Fruit('resources/banane.png', 2)
+        self.banana = fruits.Fruit('resources/banana.png', 2)
         self.cherry = fruits.Fruit('resources/cherry.png', 3)
         self.grape = fruits.Fruit('resources/grape.png', 4)
         self.pineapple = fruits.Fruit('resources/pineapple.png', 5)
@@ -38,7 +38,6 @@ class Game:
         self.field_squares = field_squares
 
     def restart(self):
-        print(self.sn.segments[0].x, self.sn.segments[0].y)
         if int(self.score) > int(self.trophy_score):
             self.trophy_score = self.score
         self.score = '       '
@@ -49,7 +48,6 @@ class Game:
         self.generate_fruit(self.fruit)
         del self.sn.segments[:]
         self.create_snake_segments(3)
-        print(self.sn.segments[0].x, self.sn.segments[0].y)
         self.direction = 'RIGHT'
 
     def game_over(self):
@@ -87,5 +85,9 @@ class Game:
                                               self.field_squares[len(self.field_squares) // 2 + self.n_sq // 2].y,
                                               'head'))
         for i in range(1, n):
+            if i == n - 1:
+                name = 'tail'
+            else:
+                name = 'body'
             self.sn.segments.append(
-                snake.Segment(self.sn.segments[0].x - self.widthSq * i, self.sn.segments[0].y, 'body'))
+                snake.Segment(self.sn.segments[0].x - self.widthSq * i, self.sn.segments[0].y, name))

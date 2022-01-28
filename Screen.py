@@ -1,4 +1,5 @@
 import random
+import time
 
 import pygame
 
@@ -41,6 +42,7 @@ class Screen:
             else:
                 self.game.game_over()
             # Listen to events
+            time.sleep(0.1)
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
                     pygame.quit()
@@ -108,12 +110,21 @@ class Screen:
     # Draw snake and fruit
     def draw_objects(self):
         for segment in self.game.sn.segments:
-            segment_rect = pygame.Rect(segment.x, segment.y, self.widthSq, self.heightSq)
+            if segment.name == 'head':
+                body = pygame.image.load('resources/head.png')
+            elif segment.name == 'tail':
+                body = pygame.image.load('resources/tail.png')
+            else:
+                body = pygame.image.load('resources/body.png')
+            segment_rect = body.get_rect()
+            body = pygame.transform.scale(body, (self.widthSq, self.widthSq))
+            segment_rect.top = segment.y
+            segment_rect.left = segment.x
             if not (segment.x <= self.field_squares[0].left - (self.widthSq * 3) or segment.x >= self.field_squares[
                 -1].left + (
                             self.widthSq * 0.9) or segment.y <= self.field_squares[0].top - self.widthSq or segment.y >=
                     self.field_squares[-1].bottom):
-                pygame.draw.rect(self.screen, (240, 120, 0), segment_rect)
+                self.screen.blit(body, segment_rect)
 
         if not self.game.fruit.is_alive:
             self.game.fruit.is_alive = True

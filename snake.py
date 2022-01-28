@@ -25,7 +25,8 @@ class Snake:
             if round(head.x / 10) * 10 == round(fruit_rect.x / 10) * 10 and round(head.y / 10) * 10 == round(
                     fruit_rect.y / 10) * 10:
                 fruit.is_alive = False
-                self.segments.append(Segment(self.segments[-1].x, self.segments[-1].y, 'body'))
+                self.segments.append(Segment(self.segments[-1].x, self.segments[-1].y, 'tail'))
+                self.segments[-2].name = 'body'
             if direction == 'RIGHT':
                 change_x = speed
                 change_y = 0
@@ -41,7 +42,7 @@ class Snake:
             self.segments.insert(0, Segment(head.x + change_x, head.y - change_y, 'head'))
             self.segments[1].name = 'body'
             del self.segments[-1]
-        time.sleep(0.1)
+            self.segments[-1].name = 'tail'
 
 
 class Segment:
