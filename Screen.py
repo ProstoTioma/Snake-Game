@@ -1,5 +1,6 @@
 import random
 import time
+from PIL import Image
 
 import pygame
 
@@ -110,12 +111,8 @@ class Screen:
     # Draw snake and fruit
     def draw_objects(self):
         for segment in self.game.sn.segments:
-            if segment.name == 'head':
-                body = pygame.image.load('resources/head.png')
-            elif segment.name == 'tail':
-                body = pygame.image.load('resources/tail.png')
-            else:
-                body = pygame.image.load('resources/body.png')
+            direction = self.game.direction.lower()
+            body = pygame.image.load(f'resources/rotated_{direction}_{segment.name}.png')
             segment_rect = body.get_rect()
             body = pygame.transform.scale(body, (self.widthSq, self.widthSq))
             segment_rect.top = segment.y

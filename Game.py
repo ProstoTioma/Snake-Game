@@ -2,6 +2,7 @@ import fruits
 import snake
 import random
 import pygame
+from PIL import Image
 
 
 class Game:
@@ -91,3 +92,25 @@ class Game:
                 name = 'body'
             self.sn.segments.append(
                 snake.Segment(self.sn.segments[0].x - self.widthSq * i, self.sn.segments[0].y, name))
+
+    # def rotate_segment(self, segment):
+    #     if self.direction == 'RIGHT':
+    #         rotated = Image.open(f'resources/{segment.name}.png')
+    #         rotated = rotated.rotate(0)
+    #         rotated.save(f'resources/rotated_right_{segment.name}.png')
+    #         return pygame.image.load(f'resources/{segment.name}.png')
+    #     elif self.direction == 'LEFT':
+    #         rotated = Image.open(f'resources/{segment.name}.png')
+    #         rotated = rotated.rotate(180)
+    #         rotated.save(f'resources/rotated_left_{segment.name}.png')
+    #         return pygame.image.load(f'resources/rotated_left_{segment.name}.png')
+    #     elif self.direction == 'UP':
+    #         rotated = Image.open(f'resources/{segment.name}.png')
+    #         rotated = rotated.rotate(90)
+    #         rotated.save(f'resources/rotated_up_{segment.name}.png')
+    #         return pygame.image.load(f'resources/rotated_up_{segment.name}.png')
+    #     else:
+    #         rotated = Image.open(f'resources/{segment.name}.png')
+    #         rotated = rotated.rotate(270)
+    #         rotated.save(f'resources/rotated_down_{segment.name}.png')
+    #         return pygame.image.load(f'resources/rotated_down_{segment.name}.png')
