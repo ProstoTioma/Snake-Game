@@ -31,19 +31,26 @@ class Screen:
         self.draw_background()
         self.draw_field()
         self.game.create_snake_segments(3)
-        self.game.fruit_rect = self.game.generate_fruit(self.game.fruit)
+        self.game.fruit_rect = self.game.generate_object(self.game.fruit)
 
         while True:
             if not self.game.gameOver:
                 self.draw_field()
                 self.game.sn.move(self.game.direction, self.field_squares, self.game.fruit_rect, self.game.fruit)
                 self.draw_objects()
+                self.game.eat_object()
+                if self.game.is_eaten_object:
+                    duration_check = random.randint(0, 101)
+                    if duration_check == self.game.object_duration:
+                        self.game.time_delay = 0.1
+                        self.game.is_eaten_object = False
+
                 if not self.game.sn.is_alive:
                     self.game.game_over()
             else:
                 self.game.game_over()
             # Listen to events
-            time.sleep(0.1)
+            time.sleep(self.game.time_delay)
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
                     pygame.quit()
@@ -162,9 +169,6 @@ class Screen:
                             segment.name = 'twist'
                             direction = 'up'
 
-
-
-            # for segment in self.game.sn.segments:
             body = pygame.image.load(f'resources/rotated_{direction}_{segment.name}.png')
             segment_rect = body.get_rect()
             body = pygame.transform.scale(body, (self.widthSq, self.widthSq))
@@ -176,14 +180,45 @@ class Screen:
                     self.field_squares[-1].bottom):
                 self.screen.blit(body, segment_rect)
 
+        # Objects
+        if len(self.game.boxes) != 0:
+            for box in self.game.boxes:
+                self.screen.blit(box[0], box[1])
+
+        object_spawn = random.randint(0, 201)
+        if object_spawn == self.game.time_object:
+            if self.game.object is not None:
+                self.game.object = None
+
+            if self.game.object is None:
+                self.game.object = random.choice(self.game.objects)
+                if self.game.object.score == 0:
+                    if self.game.box_limit == self.game.box_count:
+                        while self.game.object.score == 0:
+                            self.game.object = random.choice(self.game.objects)
+                    else:
+                        self.game.box_count += 1
+                    self.game.object_rect = self.game.generate_object(self.game.object)
+
+                    self.game.boxes.append((self.game.loaded_object, self.game.object_rect))
+                else:
+                    self.game.object_rect = self.game.generate_object(self.game.object)
+
+        if self.game.object is not None:
+            if self.game.object.score == 0:
+                self.screen.blit(self.game.boxes[-1][0], self.game.boxes[-1][1])
+            else:
+                self.screen.blit(self.game.loaded_object, self.game.object_rect)
+
+        # Fruits
         if not self.game.fruit.is_alive:
             self.game.fruit.is_alive = True
-            if self.game.score == '       ':
+            if self.game.score == '        ':
                 self.game.score = 0
             else:
                 self.game.score = str(int(self.game.score) + self.game.fruit.score)
             self.game.fruit = random.choice(self.game.fruits)
-            self.game.fruit_rect = self.game.generate_fruit(self.game.fruit)
+            self.game.fruit_rect = self.game.generate_object(self.game.fruit)
 
         self.screen.blit(self.game.loaded_fruit, self.game.fruit_rect)
 

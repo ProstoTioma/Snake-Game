@@ -22,8 +22,7 @@ class Snake:
             change_x = 0
             change_y = 0
             head = self.segments[0]
-            if round(head.x / 10) * 10 == round(fruit_rect.x / 10) * 10 and round(head.y / 10) * 10 == round(
-                    fruit_rect.y / 10) * 10:
+            if head.x == fruit_rect.x and head.y == fruit_rect.y:
                 fruit.is_alive = False
                 self.segments.append(Segment(self.segments[-1].x, self.segments[-1].y, 'tail'))
                 self.segments[-2].name = 'body'
