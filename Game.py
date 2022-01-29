@@ -1,5 +1,5 @@
-import fruits
-import snake
+import Fruit
+import Snake
 import random
 import pygame
 from PIL import Image
@@ -13,15 +13,15 @@ class Game:
         self.width = width
         self.height = height
 
-        self.sn = snake.Snake(widthSq, heightSq)
+        self.sn = Snake.Snake(widthSq, heightSq)
 
-        self.apple = fruits.Fruit('resources/apple.png', 1)
-        self.banana = fruits.Fruit('resources/banana.png', 2)
-        self.cherry = fruits.Fruit('resources/cherry.png', 3)
-        self.grape = fruits.Fruit('resources/grape.png', 4)
-        self.pineapple = fruits.Fruit('resources/pineapple.png', 5)
-        self.strawberry = fruits.Fruit('resources/strawberry.png', 5)
-        self.mushroom = fruits.Fruit('resources/mushroom.png', 0)
+        self.apple = Fruit.Fruit('resources/apple.png', 1)
+        self.banana = Fruit.Fruit('resources/banana.png', 2)
+        self.cherry = Fruit.Fruit('resources/cherry.png', 3)
+        self.grape = Fruit.Fruit('resources/grape.png', 4)
+        self.pineapple = Fruit.Fruit('resources/pineapple.png', 5)
+        self.strawberry = Fruit.Fruit('resources/strawberry.png', 5)
+        self.mushroom = Fruit.Fruit('resources/mushroom.png', 0)
 
         self.fruits = [self.apple, self.banana, self.cherry, self.grape, self.pineapple, self.strawberry, self.mushroom]
         self.fruit = self.apple
@@ -82,7 +82,7 @@ class Game:
         return square
 
     def create_snake_segments(self, n):
-        self.sn.segments.append(snake.Segment(self.field_squares[len(self.field_squares) // 2 + self.n_sq // 2].x,
+        self.sn.segments.append(Snake.Segment(self.field_squares[len(self.field_squares) // 2 + self.n_sq // 2].x,
                                               self.field_squares[len(self.field_squares) // 2 + self.n_sq // 2].y,
                                               'head'))
         for i in range(1, n):
@@ -91,7 +91,7 @@ class Game:
             else:
                 name = 'body'
             self.sn.segments.append(
-                snake.Segment(self.sn.segments[0].x - self.widthSq * i, self.sn.segments[0].y, name))
+                Snake.Segment(self.sn.segments[0].x - self.widthSq * i, self.sn.segments[0].y, name))
 
     # def rotate_segment(self, segment):
     #     if self.direction == 'RIGHT':
