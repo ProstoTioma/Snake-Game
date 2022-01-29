@@ -113,10 +113,8 @@ class Screen:
         direction = self.game.direction
         for i in range(len(self.game.sn.segments)):
             segment = self.game.sn.segments[i]
-            if i != 0:
-                previous_segment = self.game.sn.segments[i - 1]
-            else:
-                previous_segment = segment
+            previous_segment = self.game.sn.segments[i - 1] if i != 0 else segment
+            next_segment = self.game.sn.segments[i + 1] if i != len(self.game.sn.segments) - 1 else None
             if segment.x < previous_segment.x:
                 if segment.y == previous_segment.y:
                     direction = 'right'
@@ -124,6 +122,13 @@ class Screen:
                     direction = 'down'
                 else:
                     direction = 'up'
+                if next_segment is not None and segment.x == next_segment.x:
+                    segment.name = 'twist'
+                    if segment.y > next_segment.y:
+                        direction = 'up'
+                    else:
+                        direction = 'right'
+
             elif segment.x > previous_segment.x:
                 if segment.y == previous_segment.y:
                     direction = 'left'
@@ -131,12 +136,33 @@ class Screen:
                     direction = 'down'
                 else:
                     direction = 'up'
+                if next_segment is not None and segment.x == next_segment.x:
+                    segment.name = 'twist'
+                    if segment.y > next_segment.y:
+                        direction = 'down'
+                    else:
+                        direction = 'left'
+
             else:
                 if segment.name != 'head':
                     if segment.y < previous_segment.y:
                         direction = 'down'
+                        if next_segment is not None and segment.y == next_segment.y:
+                            segment.name = 'twist'
+                            if segment.x > next_segment.x:
+                                direction = 'left'
+                            else:
+                                direction = 'right'
                     else:
                         direction = 'up'
+                        if next_segment is not None and segment.x > next_segment.x:
+                            segment.name = 'twist'
+                            direction = 'down'
+                        elif next_segment is not None and segment.x < next_segment.x:
+                            segment.name = 'twist'
+                            direction = 'up'
+
+
 
             # for segment in self.game.sn.segments:
             body = pygame.image.load(f'resources/rotated_{direction}_{segment.name}.png')
