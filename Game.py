@@ -2,7 +2,6 @@ import Object
 import Snake
 import random
 import pygame
-from PIL import Image
 
 
 class Game:
@@ -84,19 +83,21 @@ class Game:
 
     # Generate a fruit on the random square
     def generate_object(self, game_object):
+        is_fruit = False
         if game_object in self.fruits:
             game_object = pygame.image.load(game_object.path)
             game_object = pygame.transform.scale(game_object, (self.widthSq, self.heightSq))
             object_rect = game_object.get_rect()
             self.loaded_fruit = game_object
             self.fruit_rect = object_rect
+            is_fruit = True
         else:
             game_object = pygame.image.load(game_object.path)
             game_object = pygame.transform.scale(game_object, (self.widthSq, self.heightSq))
             object_rect = game_object.get_rect()
             self.loaded_object = game_object
             self.object_rect = object_rect
-        return self.object_collision()
+        return self.object_collision(is_fruit)
 
     def create_snake_segments(self, n):
         self.sn.segments.append(Snake.Segment(self.field_squares[len(self.field_squares) // 2 + self.n_sq // 2].x,
@@ -111,7 +112,7 @@ class Game:
                 Snake.Segment(self.sn.segments[0].x - self.widthSq * i, self.sn.segments[0].y, name))
 
     # Check if object spawns not in the snake or fruit and return correct square
-    def object_collision(self):
+    def object_collision(self, is_fruit):
         collision = False
         square = random.choice(self.field_squares)
 
@@ -122,6 +123,14 @@ class Game:
             for segment in self.sn.segments:
                 if segment.x == square.x and segment.y == square.y:
                     collision = True
+
+            if not is_fruit:
+                if square.x == self.fruit_rect.x and square.y == self.fruit_rect.y:
+                    collision = True
+
+                for box in self.boxes:
+                    if square.x == box.x and square.y == box.y:
+                        collision = True
 
             if not collision:
                 break

@@ -1,6 +1,5 @@
 import random
 import time
-from PIL import Image
 
 import pygame
 
@@ -40,7 +39,7 @@ class Screen:
                 self.draw_objects()
                 self.game.eat_object()
                 if self.game.is_eaten_object:
-                    duration_check = random.randint(0, 101)
+                    duration_check = random.randint(0, self.game.object_duration + 1)
                     if duration_check == self.game.object_duration:
                         self.game.time_delay = 0.1
                         self.game.is_eaten_object = False
@@ -185,7 +184,7 @@ class Screen:
             for box in self.game.boxes:
                 self.screen.blit(box[0], box[1])
 
-        object_spawn = random.randint(0, 201)
+        object_spawn = random.randint(0, self.game.time_object + 1)
         if object_spawn == self.game.time_object:
             if self.game.object is not None:
                 self.game.object = None
