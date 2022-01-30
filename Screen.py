@@ -26,14 +26,25 @@ class Screen:
         self.game = Game.Game(self.widthSq, self.heightSq, self.screen, self.field_squares, self.n_sq, self.width,
                               self.height)
 
+        pygame.mixer.init()
+        self.main_theme = pygame.mixer.Sound('resources/main_theme.wav')
+        self.death_sound = pygame.mixer.Sound('resources/death.wav')
+        self.fruit_sound = pygame.mixer.Sound('resources/eat_fruit.wav')
+        self.main_theme.set_volume(0.05)
+        self.death_sound.set_volume(0.01)
+        self.fruit_sound.set_volume(0.01)
+
     def start(self):
         self.draw_background()
         self.draw_field()
         self.game.create_snake_segments(3)
         self.game.fruit_rect = self.game.generate_object(self.game.fruit)
 
+        pygame.mixer.Sound.play(self.main_theme, -1)
+
         while True:
             if not self.game.gameOver:
+
                 self.draw_field()
                 self.game.sn.move(self.game.direction, self.field_squares, self.game.fruit_rect, self.game.fruit)
                 self.draw_objects()
@@ -45,28 +56,44 @@ class Screen:
                         self.game.is_eaten_object = False
 
                 if not self.game.sn.is_alive:
+                    self.main_theme.stop()
+                    self.death_sound.play()
                     self.game.game_over()
             else:
+                self.main_theme.stop()
+                self.death_sound.play()
                 self.game.game_over()
             # Listen to events
-            time.sleep(self.game.time_delay)
+            key_w = False
+            key_a = False
+            key_s = False
+            key_d = False
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
                     pygame.quit()
                     break
                 if event.type == pygame.KEYDOWN:
                     if event.key == pygame.K_r:
+                        self.main_theme.stop()
+                        self.death_sound.stop()
+                        self.fruit_sound.stop()
+                        self.main_theme.play(-1)
                         self.game.restart()
-                    if (event.key == pygame.K_UP or event.key == pygame.K_w) and self.game.direction != 'DOWN':
-                        self.game.direction = 'UP'
-                    elif (event.key == pygame.K_DOWN or event.key == pygame.K_s) and self.game.direction != 'UP':
-                        self.game.direction = 'DOWN'
-                    elif (event.key == pygame.K_LEFT or event.key == pygame.K_a) and self.game.direction != 'RIGHT':
-                        self.game.direction = 'LEFT'
-                    elif (event.key == pygame.K_RIGHT or event.key == pygame.K_d) and self.game.direction != 'LEFT':
-                        self.game.direction = 'RIGHT'
+                    key_w = True if event.key == (pygame.K_w or pygame.K_UP) else False
+                    key_a = True if event.key == (pygame.K_a or pygame.K_LEFT) else False
+                    key_s = True if event.key == (pygame.K_s or pygame.K_RIGHT) else False
+                    key_d = True if event.key == (pygame.K_d or pygame.K_DOWN) else False
+            if key_w and self.game.direction != 'DOWN':
+                self.game.direction = 'UP'
+            elif key_s and self.game.direction != 'UP':
+                self.game.direction = 'DOWN'
+            elif key_a and self.game.direction != 'RIGHT':
+                self.game.direction = 'LEFT'
+            elif key_d and self.game.direction != 'LEFT':
+                self.game.direction = 'RIGHT'
 
             pygame.display.update()
+            time.sleep(self.game.time_delay)
 
     # Draw squares and score
     def draw_field(self):
@@ -184,7 +211,13 @@ class Screen:
             for box in self.game.boxes:
                 self.screen.blit(box[0], box[1])
 
-        object_spawn = random.randint(0, self.game.time_object + 1)
+        if self.game.object is not None:
+            time_object = self.game.time_object * 2 if self.game.object.score == 2 else self.game.time_object // 3
+            if self.game.object.score != 1 and self.game.object.score != 2:
+                time_object = self.game.time_object
+        else:
+            time_object = self.game.time_object
+        object_spawn = random.randint(0, time_object + 1)
         if object_spawn == self.game.time_object:
             if self.game.object is not None:
                 self.game.object = None
@@ -215,7 +248,9 @@ class Screen:
             if self.game.score == '        ':
                 self.game.score = 0
             else:
+                self.fruit_sound.play()
                 self.game.score = str(int(self.game.score) + self.game.fruit.score)
+
             self.game.fruit = random.choice(self.game.fruits)
             self.game.fruit_rect = self.game.generate_object(self.game.fruit)
 

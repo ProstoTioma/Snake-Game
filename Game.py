@@ -38,10 +38,10 @@ class Game:
         self.loaded_object = None
         self.object_rect = None
         self.box_count = 0
-        self.box_limit = 5
+        self.box_limit = 10
 
-        self.time_object = 200
-        self.object_duration = 100
+        self.time_object = 250
+        self.object_duration = 200
 
         self.gameOver = False
         self.score = '0'
@@ -129,7 +129,7 @@ class Game:
                     collision = True
 
                 for box in self.boxes:
-                    if square.x == box.x and square.y == box.y:
+                    if square.x == box[1].x and square.y == box[1].y:
                         collision = True
 
             if not collision:
