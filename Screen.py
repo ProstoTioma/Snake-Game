@@ -30,9 +30,9 @@ class Screen:
         self.main_theme = pygame.mixer.Sound('resources/main_theme.wav')
         self.death_sound = pygame.mixer.Sound('resources/death.wav')
         self.fruit_sound = pygame.mixer.Sound('resources/eat_fruit.wav')
-        self.main_theme.set_volume(0.05)
-        self.death_sound.set_volume(0.01)
-        self.fruit_sound.set_volume(0.01)
+        self.main_theme.set_volume(0.1)
+        self.death_sound.set_volume(0.05)
+        self.fruit_sound.set_volume(0.05)
 
     def start(self):
         self.draw_background()
